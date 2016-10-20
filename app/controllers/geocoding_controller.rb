@@ -7,6 +7,8 @@ class GeocodingController < ApplicationController
   end
 
   def street_to_coords
+
+
     @street_address = params[:user_street_address]
     @street_address_without_spaces = URI.encode(@street_address)
 
@@ -17,11 +19,13 @@ class GeocodingController < ApplicationController
     #   characters removed, is in the variable @street_address_without_spaces.
     # ==========================================================================
 
+@url = "http://maps.googleapis.com/maps/api/geocode/json?address="+@street_address_without_spaces
 
+@parsed_data = JSON.parse(open(@url).read)
 
-    @latitude = "Replace this string with your answer."
+    @latitude = @parsed_data["results"][0]["geometry"]["location"]["lat"]
 
-    @longitude = "Replace this string with your answer."
+    @longitude = @parsed_data["results"][0]["geometry"]["location"]["lng"]
 
     render("geocoding/street_to_coords.html.erb")
   end
